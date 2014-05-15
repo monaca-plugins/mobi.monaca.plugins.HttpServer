@@ -12,7 +12,7 @@
     <license>Asial</license>
 
     <js-module src="www/httpserver.js" name="HttpServer">
-        <clobbers target="monaca.WebSocketServer" />
+        <clobbers target="monaca.HttpServer" />
     </js-module>
 
     <platform name="android">
