@@ -10,6 +10,11 @@
         <engine name="cordova" version=">=2.9.0" />
     </engines>
     <license>Asial</license>
+
+    <js-module src="www/httpserver.js" name="HttpServer">
+        <clobbers target="monaca.WebSocketServer" />
+    </js-module>
+
     <platform name="android">
         <config-file target="config.xml" parent="/*">
             <feature name="HttpServer">
