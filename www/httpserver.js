@@ -1,3 +1,5 @@
+(function() {
+        
     var HttpServer = function(rootDirectory, port){
         this.rootDirectory = rootDirectory || ""; // server base root start from "www" folder
         this.port = port || 3000;
@@ -81,7 +83,9 @@
     };
     
     
-    module.exports = new HttpServer();
+    module.exports = HttpServer;
+            
+})();
             
 
 
