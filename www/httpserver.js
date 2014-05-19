@@ -1,3 +1,5 @@
+var HttpServerPlugin = {};
+
 (function() {
         
     var HttpServer = function(rootDirectory, port){
@@ -83,9 +85,9 @@
     };
     
     
-    module.exports = HttpServer;
+    HttpServerPlugin = HttpServer;    
             
 })();
             
 
-
+module.exports = HttpServerPlugin;
