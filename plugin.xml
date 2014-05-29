@@ -10,11 +10,22 @@
         <engine name="cordova" version=">=2.9.0" />
     </engines>
     <license>Asial</license>
+
+    <js-module src="www/httpServer.js" name="HttpServer">
+        <clobbers target="plugins.httpServer" />
+    </js-module>
+
+    <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="HttpServer">
                 <param name="android-package" value="mobi.monaca.framework.plugin.HttpServerPlugin"/>
             </feature>
         </config-file>
+
+        <source-file src="src/android/HttpServerPlugin.java" target-dir="src/mobi/monaca/framework/plugin" />
+        <source-file src="src/android/MonacaLocalServer.java" target-dir="src/mobi/monaca/framework/plugin" />
+        <source-file src="src/android/NanoHTTPD.java" target-dir="src/fi/iki/elonen" />
+        <source-file src="src/android/SimpleWebServer.java" target-dir="src/fi/iki/elonen" />        
     </platform>
 </plugin>
