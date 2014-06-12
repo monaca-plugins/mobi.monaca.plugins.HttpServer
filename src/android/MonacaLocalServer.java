@@ -3,13 +3,11 @@ package mobi.monaca.framework.plugin;
 import java.io.File;
 import java.io.IOException;
 
-import mobi.monaca.framework.MonacaPageActivity;
 import android.app.Activity;
 import fi.iki.elonen.SimpleWebServer;
 
 public class MonacaLocalServer {
 	private static final String TAG = MonacaLocalServer.class.getSimpleName();
-	private MonacaPageActivity activity;
 	private String mAppAssetPath;
 	private String fullPath;
 	private SimpleWebServer webServer;
@@ -17,9 +15,8 @@ public class MonacaLocalServer {
 
 	public MonacaLocalServer(Activity activity, String rootDir, int port) {
 		
-		this.activity = (MonacaPageActivity) activity;
 
-		mAppAssetPath = this.activity.getAppWWWPath();
+		mAppAssetPath = "";
 
 		fullPath = mAppAssetPath + "/" + removeLeadingSlash(rootDir);
 		File fullPathFile = new File(fullPath);

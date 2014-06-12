@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import mobi.monaca.framework.MonacaApplication;
-import mobi.monaca.framework.psedo.R;
-
 public class SimpleWebServer extends NanoHTTPD {
     /**
      * Hashtable mapping (String)FILENAME_EXTENSION -> (String)MIME_TYPE
@@ -102,8 +99,6 @@ public class SimpleWebServer extends NanoHTTPD {
             String tok = st.nextToken();
             if (tok.equals("/"))
                 newUri += "/";
-            else if (tok.equals(MonacaApplication.getStringFromResource(R.string.space)))
-                newUri += "%20";
             else {
                 try {
                     newUri += URLEncoder.encode(tok, "UTF-8");
@@ -234,9 +229,9 @@ public class SimpleWebServer extends NanoHTTPD {
                         res.addHeader("Content-Length", "" + fileLen);
                         res.addHeader("ETag", etag);
                         if(mime.equalsIgnoreCase("text/html") || mime.equalsIgnoreCase("application/javascript") || mime.equalsIgnoreCase("text/json")){
-                        	// no cache
+                            // no cache
                         }else{
-                        	res.addHeader("Cache-Control", "max-age=2419200");
+                            res.addHeader("Cache-Control", "max-age=2419200");
                         }
                     }
                 }

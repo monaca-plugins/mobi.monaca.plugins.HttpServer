@@ -28,9 +28,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
-import mobi.monaca.framework.MonacaApplication;
-import mobi.monaca.framework.psedo.R;
-
 /**
  * A simple, tiny, nicely embeddable HTTP server in Java
  * <p/>
@@ -602,7 +599,7 @@ public abstract class NanoHTTPD {
             }
 
             public String getDescription() {
-                return "" + this.requestStatus + MonacaApplication.getStringFromResource(R.string.space) + description;
+                return description;
             }
         }
     }

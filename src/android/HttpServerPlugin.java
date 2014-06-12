@@ -1,12 +1,14 @@
 package mobi.monaca.framework.plugin;
 
-import mobi.monaca.framework.MonacaApplication;
-import mobi.monaca.framework.bootloader.LocalFileBootloader;
-import mobi.monaca.framework.util.MyLog;
-import mobi.monaca.framework.util.NetworkUtils;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.List;
 
-import org.apache.cordova.api.CallbackContext;
-import org.apache.cordova.api.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.http.conn.util.InetAddressUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +20,7 @@ public class HttpServerPlugin extends CordovaPlugin{
 
 	@Override
 	public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-		MyLog.v(TAG, "HttpServerPlugin exec action:" + action + ", args:" + args);
+//		MyLog.v(TAG, "HttpServerPlugin exec action:" + action + ", args:" + args);
 		
 		if(action.equalsIgnoreCase("getRootDirectoryAbsolutePath")){
 			if(localServer != null){
@@ -66,7 +68,7 @@ public class HttpServerPlugin extends CordovaPlugin{
 							localServer = new MonacaLocalServer(cordova.getActivity(), rootDir, port);
 							localServer.start();
 							JSONObject result = new JSONObject();
-							result.put("networks", NetworkUtils.getIPAddresses());
+							result.put("networks", getIPAddresses());
 							result.put("port", port);
 							callbackContext.success(result);
 						}catch (JSONException e) {
@@ -83,11 +85,7 @@ public class HttpServerPlugin extends CordovaPlugin{
 						callbackContext.error("Cannot start server.");
 					}};
 
-				if (((MonacaApplication)cordova.getActivity().getApplication()).enablesBootloader()) {
-					LocalFileBootloader.setup(cordova.getActivity(), serverRunner, fail);
-				} else {
 					serverRunner.run();
-				}
 			}
 			return true;
 		}else if(action.equalsIgnoreCase("stop")){
@@ -104,18 +102,68 @@ public class HttpServerPlugin extends CordovaPlugin{
 	
 	private JSONObject createAddressJSON() throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put("ip", NetworkUtils.getIPAddress(true));
+		result.put("ip", getIPAddress(true));
 		result.put("port", localServer.getPort());
 		return result;
 	}
 	
 	@Override
 	public void onDestroy() {
-		MyLog.i(TAG, "Monaca HttpServer plugin onDestroy");
+//		MyLog.i(TAG, "Monaca HttpServer plugin onDestroy");
 		if(localServer != null){
-			MyLog.i(TAG, "closing local server");
+//			MyLog.i(TAG, "closing local server");
 			localServer.stop();
 		}
 		super.onDestroy();
 	}
+	
+	private String getIPAddress(boolean useIPv4) {
+		try {
+			List<NetworkInterface> interfaces = Collections
+					.list(NetworkInterface.getNetworkInterfaces());
+			for (NetworkInterface intf : interfaces) {
+				List<InetAddress> addrs = Collections.list(intf
+						.getInetAddresses());
+				for (InetAddress addr : addrs) {
+					if (!addr.isLoopbackAddress()) {
+						String sAddr = addr.getHostAddress().toUpperCase();
+						boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+						if (useIPv4) {
+							if (isIPv4)
+								return sAddr;
+						} else {
+							if (!isIPv4) {
+								int delim = sAddr.indexOf('%'); // drop ip6 port
+																// suffix
+								return delim < 0 ? sAddr : sAddr.substring(0,
+										delim);
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception ex) {
+		} // for now eat exceptions
+		return "";
+	}
+
+	private JSONObject getIPAddresses() throws SocketException, JSONException {
+		JSONObject networkJson= new JSONObject();
+		List<NetworkInterface> interfaces = Collections.list(NetworkInterface
+				.getNetworkInterfaces());
+		for (NetworkInterface intf : interfaces) {
+			List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+			for (InetAddress addr : addrs) {
+				if (!addr.isLoopbackAddress()) {
+					String ipAddress = addr.getHostAddress().toUpperCase();
+					boolean isIPv4 = InetAddressUtils.isIPv4Address(ipAddress);
+					if (isIPv4) {						
+						String interfacename = intf.getName();
+						networkJson.put(interfacename, ipAddress);
+					}
+				}
+			}
+		}
+		return networkJson;
+	}	
 }
