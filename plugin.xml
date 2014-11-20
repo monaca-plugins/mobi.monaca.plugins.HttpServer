@@ -5,7 +5,9 @@
     version="1.0.0">
 
     <name>HttpServer</name>
-	<description>HttpServer</description>
+	<description>
+        HTTP Server plugin for establishing HTTP connection
+    </description>
     <engines>
         <engine name="cordova" version=">=2.9.0" />
     </engines>
